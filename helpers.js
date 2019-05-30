@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 
 module.exports = {
@@ -7,15 +8,14 @@ module.exports = {
   },
 
   hashPassword: (password, callback) => {
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) throw err;
-      bcrypt.hash(password, salt, (err, hash) => {
-        callback(err, hash);
-      });
-    });
+    bcrypt.hash(password, 10, callback);
   },
 
   passwordsMatches: (password, hash) => {
     return bcrypt.compareSync(password, hash);
+  },
+
+  createToken: ({email, userID}, expPeriod = 1440) => {
+    return jwt.sign({email, userID}, process.env.JWT_KEY, {expiresIn: expPeriod});
   }
 };

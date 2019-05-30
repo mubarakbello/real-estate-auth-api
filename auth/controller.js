@@ -1,6 +1,10 @@
 const Users = require('./model');
 
-const {checkUndefinedFields, passwordsMatches} = require('../helpers');
+const {
+  checkUndefinedFields,
+  passwordsMatches,
+  createToken
+} = require('../helpers');
 
 module.exports = {
 
@@ -10,36 +14,42 @@ module.exports = {
 
     const undefinedFields = checkUndefinedFields(email, password);
     if (undefinedFields.length) {
-      return res.send(JSON.stringify({
+      return res.json({
         error: true,
         message: 'Some fields not passed'
-      }));
+      });
     }
 
     Users.findOne({email}, (err, data) => {
-      if (err) throw err;
+      if (err) {
+        return res.json({
+          error: true,
+          message: err.message
+        });
+      }
       if (data) {
         // Email exists, now verify password.
         if (passwordsMatches(password, data.password)) {
           // Password is correct too, now return auth token.
-          res.send(JSON.stringify({
+          const token = createToken({email, userID: data._id});
+          res.json({
             error: false,
             message: 'Logged in successfully!',
-            data: data
-          }));
+            token
+          });
         } else {
           // Password incorrect, but email is registered.
-          res.send(JSON.stringify({
+          res.json({
             error: true,
             message: 'Password incorrect'
-          }));
+          });
         }
       } else {
         // Email doesn't exist.
-        res.send(JSON.stringify({
+        res.json({
           error: true,
           message: 'Email not registered'
-        }));
+        });
       }
     });
   },
@@ -51,20 +61,25 @@ module.exports = {
 
     const undefinedFields = checkUndefinedFields(email, password);
     if (undefinedFields.length) {
-      return res.send(JSON.stringify({
+      return res.json({
         error: true,
         message: 'Some fields not passed'
-      }));
+      });
     }
     
     const newUser = new Users({email, name, password});
     Users.addNewUser(newUser, (err, data) => {
-      if (err) throw err;
-      res.send(JSON.stringify({
+      if (err) {
+        return res.json({
+          error: true,
+          message: err.message
+        });
+      }
+      res.json({
         error: false,
         message: `User with email ${data.email} and Id ${data._id} added successfully`,
         data: data
-      }));
+      });
     });
   }
 

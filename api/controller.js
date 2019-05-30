@@ -10,20 +10,25 @@ module.exports = {
 
     const undefinedFields = checkUndefinedFields(property_id, owner_id);
     if (undefinedFields.length) {
-      return res.send(JSON.stringify({
+      return res.json({
         error: true,
         message: 'Some fields not passed'
-      }));
+      });
     }
 
     Properties.findByOwnerIDandPropertyID(owner_id, property_id, (err, data) => {
-      if (err) throw err;
-      res.send(JSON.stringify({
+      if (err) {
+        return res.json({
+          error: true,
+          message: err.message
+        });
+      }
+      res.json({
         error: false,
         message: `Property with Id ${property_id} for owner ${owner_id} returned`,
         data: data
-      }));
-    })
+      });
+    });
   },
 
 
@@ -34,20 +39,25 @@ module.exports = {
 
     const undefinedFields = checkUndefinedFields(ownerId,);
     if (undefinedFields.length) {
-      return res.send(JSON.stringify({
+      return res.json({
         error: true,
         message: 'Some fields not passed'
-      }));
+      });
     }
 
     Properties.getAllPropertiesByOwnerID(ownerId, (err, data) => {
-      if (err) throw err;
-      res.send(JSON.stringify({
+      if (err) {
+        return res.json({
+          error: true,
+          message: err.message
+        });
+      }
+      res.json({
         error: false,
         message: `All properties for owner ${ownerId} returned`,
         data: data
-      }));
-    })
+      });
+    });
   },
 
 
@@ -55,12 +65,17 @@ module.exports = {
     // return all properties in the db
     console.log('Handling get all properties');
     Properties.find({}, (err, data) => {
-      if (err) throw err;
-      res.send(JSON.stringify({
+      if (err) {
+        return res.json({
+          error: true,
+          message: err.message
+        });
+      }
+      res.json({
         error: false,
         message: 'All properties returned',
         data: data
-      }));
+      });
     });
   },
 
@@ -72,20 +87,25 @@ module.exports = {
 
     const undefinedFields = checkUndefinedFields(name, location, ownerId, amount);
     if (undefinedFields.length) {
-      return res.send(JSON.stringify({
+      return res.json({
         error: true,
         message: 'Some fields not passed'
-      }));
+      });
     }
 
     const newProperty = new Properties({name, location, ownerId, amount})
     newProperty.save((err, data) => {
-      if (err) throw err;
-      res.send(JSON.stringify({
+      if (err) {
+        return res.json({
+          error: true,
+          message: err.message
+        });
+      }
+      res.json({
         error: false,
         message: `New property with Id ${data._id} added`,
         data: data
-      }));
+      });
     });
   },
 
@@ -93,13 +113,13 @@ module.exports = {
   editPropertyDetails: (req, res) => {
     // Update the details of a property by its ID
     const userId = req.params.user_id;
-    res.send(`Update properties handler for user: ${userId}`);
+    res.json(`Update properties handler for user: ${userId}`);
   },
 
 
   deleteProperty: (req, res) => {
     // delete a property for a user by its ID
     const userId = req.params.user_id;
-    res.send(`Delete properties handler for user: ${userId}`);
+    res.json(`Delete properties handler for user: ${userId}`);
   }
 };
