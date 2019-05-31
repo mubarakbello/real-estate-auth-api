@@ -17,5 +17,9 @@ module.exports = {
 
   createToken: ({email, userID}, expPeriod = 1440) => {
     return jwt.sign({email, userID}, process.env.JWT_KEY, {expiresIn: expPeriod});
+  },
+
+  decodeToken: (token, callback) => {
+    jwt.verify(token, process.env.JWT_KEY, callback);
   }
 };

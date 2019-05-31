@@ -5,7 +5,6 @@ const {checkUndefinedFields} = require('../helpers');
 module.exports = {
   getPropertyByID: (req, res) => {
     // Return a property for a user by its ID
-    console.log('Handling get a property by its Id and ownerId');
     const {property_id, owner_id} = req.params;
 
     const undefinedFields = checkUndefinedFields(property_id, owner_id);
@@ -34,7 +33,6 @@ module.exports = {
 
   getAllPropertiesByOwnerID: (req, res) => {
     // Return all properties for a user
-    console.log('Handling get all properties by ownerId');
     const ownerId = req.params.owner_id;
 
     const undefinedFields = checkUndefinedFields(ownerId,);
@@ -63,7 +61,6 @@ module.exports = {
 
   getAllProperties: (req, res) => {
     // return all properties in the db
-    console.log('Handling get all properties');
     Properties.find({}, (err, data) => {
       if (err) {
         return res.json({

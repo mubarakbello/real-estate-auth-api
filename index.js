@@ -10,8 +10,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/codetest', { useNewUrlParser: true }
   console.log('Connected to DB successfully!');
 });
 
-process.env.JWT_KEY = 'random-str-f487ac4e28b1';
-
 const app = express();
 const PORT = process.env.PORT || 3108;
 mongoose.Promise = global.Promise;
